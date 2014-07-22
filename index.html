@@ -1,1 +1,176 @@
-index
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Seoungwonyou.github.io by SeoungwonYou</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Seoungwonyou.github.io</h1>
+        <p class="header"></p>
+
+
+
+        <ul>
+          <li><a class="buttons github" href="https://github.com/SeoungwonYou">GitHub Profile</a></li>
+        </ul>
+
+      </header>
+      <section>
+        <h1>
+<a name="haproxy-centos-6-%EC%84%A4%EC%B9%98" class="anchor" href="#haproxy-centos-6-%EC%84%A4%EC%B9%98"><span class="octicon octicon-link"></span></a>HAProxy Centos 6 설치</h1>
+
+<h2>
+<a name="haproxy" class="anchor" href="#haproxy"><span class="octicon octicon-link"></span></a>HAProxy</h2>
+
+<p>haproxy는 오픈 소스 로드 벨런서로서 손쉽게 서비스 이중화가 가능하도록 합니다.  </p>
+
+<p><strong>로드 밸런서</strong>   </p>
+
+<h2>
+<a name="%EC%84%A4%EC%B9%98-%ED%99%98%EA%B2%BD" class="anchor" href="#%EC%84%A4%EC%B9%98-%ED%99%98%EA%B2%BD"><span class="octicon octicon-link"></span></a>설치 환경</h2>
+
+<p>CentOS release 6.4 (Final)<br>
+haproxy-1.5.2</p>
+
+<h2>
+<a name="link" class="anchor" href="#link"><span class="octicon octicon-link"></span></a>Link</h2>
+
+<ul>
+<li>HAProxy home page<br><a href="http://www.haproxy.org/">http://www.haproxy.org/</a><br>
+</li>
+<li>Configuration Manual<br><a href="http://cbonte.github.io/haproxy-dconv/configuration-1.5.html">http://cbonte.github.io/haproxy-dconv/configuration-1.5.html</a>
+</li>
+</ul><h2>
+<a name="%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%8F-%EC%95%95%EC%B6%95-%ED%95%B4%EC%A0%9C" class="anchor" href="#%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%8F-%EC%95%95%EC%B6%95-%ED%95%B4%EC%A0%9C"><span class="octicon octicon-link"></span></a>다운로드 및 압축 해제</h2>
+
+<ol>
+<li>yum install wget gcc gcc-c++ autoconf automake make openssl openssl-devel pcre-devel zlib</li>
+<li>wget <a href="http://www.haproxy.org/download/1.5/src/haproxy-1.5.2.tar.gz">http://www.haproxy.org/download/1.5/src/haproxy-1.5.2.tar.gz</a>
+</li>
+<li>tar zxvf haproxy-1.5.2.tar.gz</li>
+<li>cd haproxy-1.5.2</li>
+<li>make TARGET=linux2628 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1<br>
+압축이 해제된 haproxy-1.5.2 디렉토리의 <strong>README</strong>　파일을 참고하여 설치합니다.
+<strong>target 옵션</strong>
+</li>
+</ol><pre><code>  - linux22     for Linux 2.2
+  - linux24     for Linux 2.4 and above (default)
+  - linux24e    for Linux 2.4 with support for a working epoll (&gt; 0.21)
+  - linux26     for Linux 2.6 and above
+  - linux2628   for Linux 2.6.28, 3.x, and above (enables splice and tproxy)
+  - solaris     for Solaris 8 or 10 (others untested)
+  - freebsd     for FreeBSD 5 to 10 (others untested)
+  - osx         for Mac OS/X
+  - openbsd     for OpenBSD 3.1 to 5.2 (others untested)
+  - aix51       for AIX 5.1
+  - aix52       for AIX 5.2
+  - cygwin      for Cygwin
+  - generic     for any other OS or version.
+  - custom      to manually adjust every setting
+</code></pre>
+
+<blockquote>
+<p>uname -a   //현재 OS의 버전 확인.
+Linux lvm01 2.6.32-358.el6.x86_64 #1 SMP Fri Feb 22 00:31:26 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux</p>
+
+<pre><code>**빌드 예제**  
+For example, I use this to build for Solaris 8 :  
+`$ make TARGET=solaris CPU=ultrasparc USE_STATIC_PCRE=1`  
+And I build it this way on OpenBSD or FreeBSD :   
+`$ gmake TARGET=freebsd USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1`  
+And on a classic Linux with SSL and ZLIB support (eg: Red Hat 5.x) :  
+`$ make TARGET=linux26 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1`  
+And on a recent Linux &gt;= 2.6.28 with SSL and ZLIB support :  
+`$ make TARGET=linux2628 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1`  
+In order to build a 32-bit binary on an x86_64 Linux system with SSL support  
+without support for compression but when OpenSSL requires ZLIB anyway :  
+`$ make TARGET=linux26 ARCH=i386 USE_OPENSSL=1 ADDLIB=-lz`
+6. make install
+make install를 실행하면 아래와 같이 설치 위치가 출력됨.
+</code></pre>
+
+<p>install -d /usr/local/sbin
+install haproxy /usr/local/sbin
+install haproxy-systemd-wrapper /usr/local/sbin
+install -d /usr/local/share/man/man1
+install -m 644 doc/haproxy.1 /usr/local/share/man/man1
+install -d /usr/local/doc/haproxy
+for x in configuration architecture haproxy-en haproxy-fr; do \
+        install -m 644 doc/$x.txt /usr/local/doc/haproxy ; \
+    done</p>
+
+<pre><code>7. cp examples/haproxy.init /etc/init.d/haproxy
+7. mkdir /etc/haproxy
+8. cp ./examples.cfg  /etc/haproxy/haproxy.cfg
+9. vi /etc/haproxy/haproxy.cfg
+</code></pre>
+
+<p>lobal
+    log 127.0.0.1   local0
+    log 127.0.0.1   local1 notice
+    #log loghost    local0 info
+    maxconn 4096
+    chroot /usr/share/haproxy
+    uid 99
+    gid 99
+    daemon
+    #debug
+    #quiet</p>
+</blockquote>
+
+<p>defaults
+    log global
+    mode    http
+    option  httplog
+    option  dontlognull
+    option forwardfor
+    retries 3
+    maxconn 2000
+    option redispatch
+    timeout connect      5000
+    timeout client      50000
+    timeout server      50000</p>
+
+<p>listen  appli1-rewrite 0.0.0.0:80
+    cookie  SERVERID rewrite
+    cookie  JSESSIONID prefix
+    balance roundrobin
+    server  webserver1 172.16.120.172:80 cookie webserver1 check inter 2000 rise 2 fall 5
+    server  webserver2 172.16.120.173:80 cookie webserver2 check inter 2000 rise 2 fall 5
+listen stats :4997
+    mode http
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+    stats auth admin:pwd</p>
+
+<pre><code>
+## Remote Client 정보
+http://www.stderr.net/apache/rpaf
+
+    wget http://www.stderr.net/apache/rpaf/download/mod_rpaf-0.6.tar.gz
+
+
+
+</code></pre>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
